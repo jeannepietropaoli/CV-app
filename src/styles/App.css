@@ -1,0 +1,33 @@
+.app {
+    width: 875px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 35px 50px;
+}
+
+main {
+    display: flex;
+    gap: 30px;
+    margin-top: 35px;
+}
+
+.main--left-side {
+    flex: 1;
+}
+
+.main--right-side {
+    flex: 2;
+}
+
+main h3 {
+    font-family: 'Trirong', serif;
+    font-size: 1em;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+.main--left-side > *,
+.main--right-side > * {
+    margin-bottom: 30px;
+}

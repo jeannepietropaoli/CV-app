@@ -1,0 +1,39 @@
+.personalInfos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #5980FA;
+    padding-bottom: 15px;
+}
+
+.personalInfos--name-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.personalInfos--contact {
+    display: flex;
+    flex-direction: column;
+    text-align: end;
+    list-style: none;
+}
+
+.personalInfos--contact li {
+    font-size: 0.9em;
+    display: flex;
+    justify-content: flex-end;
+    
+}
+
+.personalInfos--contact p {
+    position: relative;
+}
+
+.personalInfos--contact img {
+    position: absolute;
+    top: 50%;
+    left: -25px;
+    transform: translateY(-60%);
+    width: 17px;
+    height: auto;
+}
