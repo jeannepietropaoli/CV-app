@@ -4,54 +4,105 @@ import phoneLogo from "../assets/phone.svg"
 import mailLogo from "../assets/mail.png"
 import profileLogo from "../assets/profile.png"
 import locationLogo from "../assets/location.svg"
+import PersonalInfosModal from "./PersonalInfosModal";
+import pencilLogo from "../assets/pencil.png"
 
 class PersonalInfos extends React.Component {
     constructor() {
         super()
         this.state = {
-            firstName : "John",
-            lastName: "Doe",
-            title : "JUNIOR WEB DEVELOPPER",
-            phoneNumber : "XXX-XXX-XXXX",
-            email : "johndoe@gmail.com",
-            city : "Quebec, QC",
-            profile : "github - johndoe_here"
+            infos : {
+                firstName : "John",
+                lastName: "Doe",
+                title : "JUNIOR WEB DEVELOPPER",
+                phoneNumber : "XXX-XXX-XXXX",
+                email : "johndoe@gmail.com",
+                city : "Quebec, QC",
+                profile : "github - johndoe_here"
+            },
+            editMode : false
         }
+
+        this.editSection = this.editSection.bind(this)
+        this.submitChanges = this.submitChanges.bind(this)
+        this.switchToEditMode = this.switchToEditMode.bind(this)
+    }
+
+    editSection(e) {
+        this.setState(prevState => {
+            return (
+                {
+                    ...prevState,
+                    infos : {
+                        ...prevState.infos,
+                        [e.target.name] : e.target.value
+                    }
+                }
+            )
+        })
+    }
+
+    submitChanges(e) {
+        e.preventDefault()
+        console.log('submit')
+        this.setState(prevState => {
+            return (
+                {
+                    ...prevState,
+                    editMode : false
+                }
+            )
+        })
+    }
+
+    switchToEditMode() {
+        this.setState(prevState => {
+            return (
+                {
+                    ...prevState,
+                    editMode : true
+                }
+            )
+        })
     }
 
     render() {
+        const {infos, editMode} = this.state
+
         return (
             <div className="personalInfos">
                 <div className="personalInfos--name-container">
-                    <h1>{`${this.state.firstName} ${this.state.lastName}`}</h1>
-                    <h3>{this.state.title}</h3>
+                    <h1>{`${infos.firstName} ${infos.lastName}`}</h1>
+                    <h3>{infos.title}</h3>
                 </div>
                 <ul className="personalInfos--contact">
                     <li>
-                        <p>
+                        <div>
                             <img alt="phone logo" src={phoneLogo} />
-                            {this.state.phoneNumber}
-                        </p>
+                            {infos.phoneNumber}
+                        </div>
                     </li>
                     <li>
-                        <p>
+                        <div>
                             <img alt="email logo" src={mailLogo} />
-                            {this.state.email}
-                        </p>
+                            {infos.email}
+                        </div>
                     </li>
                     <li>
-                        <p>
+                        <div>
                             <img alt="location logo" src={locationLogo} />
-                            {this.state.city}
-                        </p>
+                            {infos.city}
+                        </div>
                     </li>
                     <li>
-                        <p>
+                        <div>
                             <img alt="profile logo" src={profileLogo} />
-                            {this.state.profile}
-                        </p>
+                            {infos.profile}
+                        </div>
                     </li>
                 </ul>
+                {!editMode && <button className="edit-section-button" onClick={this.switchToEditMode}><img alt="edit button" src={pencilLogo}/></button>}
+                {editMode && <PersonalInfosModal infos={this.state.infos} editSection={this.editSection} submitChanges={this.submitChanges} />}
             </div>
         )
     }
