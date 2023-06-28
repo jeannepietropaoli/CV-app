@@ -1,6 +1,8 @@
 import React from "react";
 import "../styles/Experience.css"
 import { nanoid } from "nanoid";
+import ModalComplex from "./ModalComplex";
+import pencilLogo from "../assets/pencil.png"
 
 class Experience extends React.Component {
     constructor() {
@@ -23,11 +25,57 @@ class Experience extends React.Component {
                     contribution : "perseverance, patience",
                     id : nanoid()
                 }
-            ]
+            ],
+            editMode : false
         }
     }
 
+    editSection = (e, experienceId) => {
+        this.setState(prevState => {
+            return (
+                {
+                    ...prevState,
+                    experiences : prevState.experiences.map(experience => {
+                        return experience.id === experienceId
+                            ? {...experience, [e.target.name] : e.target.value}
+                            : experience
+                    })
+                }
+            )
+        })
+    }
+
+    addSection = () => {
+        this.setState(prevState => {
+            return (
+                {
+                    ...prevState,
+                    experiences : [
+                        ...prevState.experiences,
+                        {
+                            diploma : "",
+                            school : "",
+                            location : "",
+                            time : "",
+                            contribution : "",
+                            id : nanoid()
+                        }
+                    ]
+                }
+            )
+        })
+    }
+
+    toggleEditMode = (e) => {
+        e.preventDefault()
+        this.setState(prevState => {
+            return ({editMode : !prevState.editMode}
+            )
+        })
+    }
+
     render() {
+        const {experiences, editMode} = this.state
         const experienceElements = this.state.experiences.map(experience => {
             return (
                 <div key={experience.id} className="experience">
@@ -41,7 +89,9 @@ class Experience extends React.Component {
             <div className="experiences">
                 <h2>EXPERIENCE</h2>
                 {experienceElements}
-            </div>
+                {!editMode && <button className="edit-section-button" onClick={this.toggleEditMode}><img alt="edit button" src={pencilLogo}/></button>}
+                {editMode && <ModalComplex data={experiences} editSection={this.editSection} toggleEditMode={this.toggleEditMode} addSection={this.addSection} />}
+                </div>
         )
     }
 }

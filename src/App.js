@@ -1,10 +1,9 @@
 import './styles/App.css';
-import PersonalInfos from './components/PersonalInfos';
-import Introduction from './components/Introduction';
-import Skills from './components/Skills';
+import PersonalInfos from './components/PersonalInfos/PersonalInfos';
+import Introduction from './components/Introduction/Introduction';
+import Skills from './components/Skills/Skills';
 import Education from './components/Education';
 import Experience from './components/Experience';
-import BonusSection from './components/BonusSection';
 
 function App() {
   return (

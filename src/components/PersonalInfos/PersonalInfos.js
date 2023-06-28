@@ -1,11 +1,11 @@
 import React from "react";
-import "../styles/PersonalInfos.css"
-import phoneLogo from "../assets/phone.svg"
-import mailLogo from "../assets/mail.png"
-import profileLogo from "../assets/profile.png"
-import locationLogo from "../assets/location.svg"
-import PersonalInfosModal from "./PersonalInfosModal";
-import pencilLogo from "../assets/pencil.png"
+import "../../styles/PersonalInfos.css"
+import phoneLogo from "../../assets/phone.svg"
+import mailLogo from "../../assets/mail.png"
+import profileLogo from "../../assets/profile.png"
+import locationLogo from "../../assets/location.svg"
+import ModalPersonalInfos from "./ModalPersonalInfos";
+import pencilLogo from "../../assets/pencil.png"
 
 class PersonalInfos extends React.Component {
     constructor() {
@@ -22,13 +22,9 @@ class PersonalInfos extends React.Component {
             },
             editMode : false
         }
-
-        this.editSection = this.editSection.bind(this)
-        this.submitChanges = this.submitChanges.bind(this)
-        this.switchToEditMode = this.switchToEditMode.bind(this)
     }
 
-    editSection(e) {
+    editSection = (e) => {
         this.setState(prevState => {
             return (
                 {
@@ -42,25 +38,13 @@ class PersonalInfos extends React.Component {
         })
     }
 
-    submitChanges(e) {
+    toggleEditMode = (e) => {
         e.preventDefault()
-        console.log('submit')
         this.setState(prevState => {
             return (
                 {
                     ...prevState,
-                    editMode : false
-                }
-            )
-        })
-    }
-
-    switchToEditMode() {
-        this.setState(prevState => {
-            return (
-                {
-                    ...prevState,
-                    editMode : true
+                    editMode : !prevState.editMode
                 }
             )
         })
@@ -101,8 +85,8 @@ class PersonalInfos extends React.Component {
                         </div>
                     </li>
                 </ul>
-                {!editMode && <button className="edit-section-button" onClick={this.switchToEditMode}><img alt="edit button" src={pencilLogo}/></button>}
-                {editMode && <PersonalInfosModal infos={this.state.infos} editSection={this.editSection} submitChanges={this.submitChanges} />}
+                {!editMode && <button className="edit-section-button" onClick={this.toggleEditMode}><img alt="edit button" src={pencilLogo}/></button>}
+                {editMode && <ModalPersonalInfos infos={infos} editSection={this.editSection} toggleEditMode={this.toggleEditMode} />}
             </div>
         )
     }

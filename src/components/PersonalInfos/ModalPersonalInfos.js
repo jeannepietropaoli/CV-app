@@ -1,8 +1,7 @@
 import React from "react";
-import { nanoid } from "nanoid";
-import "../styles/modal.css"
+import "../../styles/modal.css"
 
-export default class PersonalInfosModal extends React.Component {
+export default class ModalPersonalInfos extends React.Component {
     convertToReadableName(key) {
         const words = key.split(/(?=[A-Z])/)
         const readable = []
@@ -27,7 +26,7 @@ export default class PersonalInfosModal extends React.Component {
 
         return(
             <div className="modal-container">
-                <form className="modal" onSubmit={this.props.submitChanges}>
+                <form className="modal" onSubmit={this.props.toggleEditMode}>
                     {formElements}
                     <button>Submit Changes</button>
             </form>

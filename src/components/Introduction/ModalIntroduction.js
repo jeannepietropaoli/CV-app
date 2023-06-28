@@ -1,12 +1,11 @@
 import React from "react";
-import { nanoid } from "nanoid";
-import "../styles/modal.css"
+import "../../styles/modal.css"
 
-export default class IntroductionModal extends React.Component {
+export default class ModalIntroduction extends React.Component {
     render() {
         return(
             <div className="modal-container">
-                <form className="modal" onSubmit={this.props.submitChanges}>
+                <form className="modal" onSubmit={this.props.toggleEditMode}>
                     <div className="formField">
                         <label htmlFor="text">Introduction</label>
                         <textarea value={this.props.text} name="text" onChange={this.props.editSection} />

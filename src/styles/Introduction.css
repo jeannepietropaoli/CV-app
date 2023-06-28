@@ -8,12 +8,16 @@
     position: relative;
 }
 
+.introduction:hover {
+    background-color: #ededed;
+}
+
 .introduction:hover > .edit-section-button {
     display: block;
 }
-/* 
 
-.personal-infos--edit-button {
+
+.edit-section-button {
     display: none;
     position: absolute;
     bottom: 0px;
@@ -21,15 +25,15 @@
     padding: 0;
     border-radius: 50%;
     border: none;
-  cursor: pointer;
-  appearance: none;
-  background-color: inherit;
-}
-
-.personal-infos--edit-button > img {
+    cursor: pointer;
+    appearance: none;
+    background-color: inherit;
+  }
+  
+  .edit-section-button > img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
     padding: 2px;
     border: 2px solid #5980FA;
-} */
+  }
