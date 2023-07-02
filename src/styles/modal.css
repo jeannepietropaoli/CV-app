@@ -6,6 +6,9 @@
     box-shadow: 2px 5px 3px lightgray;
     padding: 20px;
     background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 }
 
 .modal-container {

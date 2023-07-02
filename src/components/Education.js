@@ -1,8 +1,8 @@
 import React from "react";
+import Section from "./Section";
+import Modal from "./Modal"
 import "../styles/Education.css"
 import { nanoid } from "nanoid";
-import ModalComplex from "./ModalComplex";
-import pencilLogo from "../assets/pencil.png"
 
 class Education extends React.Component {
     constructor() {
@@ -10,19 +10,19 @@ class Education extends React.Component {
         this.state = {
             education : [
                 {
-                    diploma : "DEC METIERS D'ART",
-                    school : "CEGEP Limoilou",
-                    location : "Quebec",
-                    time : "June 2020",
-                    contribution : "perseverance, patience",
+                    diploma : {value : "Diploma", id : nanoid()},
+                    school : {value : "School", id : nanoid()},
+                    location : {value : "Location", id : nanoid()},
+                    time : {value : "June 2020", id : nanoid()},
+                    details : {value : [{id : nanoid(), detail : "Details about that course, such as specific courses,  specialization etc"}], id : nanoid()},
                     id : nanoid()
                 },
                 {
-                    diploma : "ODIN PROJECT",
-                    school : "Online",
-                    location : "Remote",
-                    time : "2022-2023",
-                    contribution : "technical programming skills",
+                    diploma : {value : "Diploma", id : nanoid()},
+                    school : {value : "School", id : nanoid()},
+                    location : {value : "Location", id : nanoid()},
+                    time : {value : "June 2020", id : nanoid()},
+                    details : {value : [{id : nanoid(), detail : "Details about that course, such as specific courses,  specialization etc"}, {id : nanoid(), detail : "Details"}], id : nanoid()},
                     id : nanoid()
                 }
             ],
@@ -30,69 +30,105 @@ class Education extends React.Component {
         }
     }
 
-    editSection = (e, programId) => {
+    editDetailsSection(e, courseId, detailId) {
         this.setState(prevState => {
-            return (
-                {
+            return ({
+                ...prevState,
+                education : prevState.education.map(course => {
+                    return course.id === courseId
+                        ? {...course, details : {...course.details, value : course.details.value.map(detail => {
+                            return detail.id === detailId
+                                ? {...detail, detail : e.target.value}
+                                : detail
+                        })} }
+                        : course
+                })
+            })
+        })
+    }
+
+    editSection = (e, courseId) => {
+        this.setState(prevState => {
+            return ({
                     ...prevState,
-                    education : prevState.education.map(program => {
-                        return program.id === programId
-                            ? {...program, [e.target.name] : e.target.value}
-                            : program
+                    education : prevState.education.map(course => {
+                        return course.id === courseId
+                            ? {...course, [e.target.name] : {...course[e.target.name], value : e.target.value}}
+                            : course
                     })
-                }
-            )
+                })
         })
     }
 
     addSection = () => {
         this.setState(prevState => {
-            return (
-                {
+            return ({
                     ...prevState,
                     education : [
                         ...prevState.education,
                         {
-                            diploma : "",
-                            school : "",
-                            location : "",
-                            time : "",
-                            contribution : "",
+                            diploma : {value : "", id : nanoid()},
+                            school : {value : "", id : nanoid()},
+                            location : {value : "", id : nanoid()},
+                            time : {value : "", id : nanoid()},
+                            details : {value : [{id : nanoid(), detail : ""}], id : nanoid()},
                             id : nanoid()
                         }
                     ]
-                }
-            )
+                })
         })
     }
 
     toggleEditMode = (e) => {
         e.preventDefault()
         this.setState(prevState => {
-            return ({editMode : !prevState.editMode}
-            )
+            return ({editMode : !prevState.editMode})
         })
     }
 
     render() {
         const {education, editMode} = this.state
-        const educationElements = this.state.education.map(program => {
+        const sectionElements = this.state.education.map(course => {
+            const detailElements = course.details.value.map(detail => {
+                return <li key={`${detail.id}`}>{detail.detail}</li>
+            })
             return (
-                <div key={program.id} className="education--item">
-                    <h3>{program.diploma}</h3>
-                    <p>{program.school} |  {program.location}  |  {program.time}</p>
-                    <p>{`--> what this program brought me : ${program.contribution}`}</p>
+                <div key={`${course.id}`} className="education--item">
+                    <h3>{course.diploma.value.toUpperCase()}</h3>
+                    <p>{course.school.value} |  {course.location.value}  |  {course.time.value}</p>
+                    <ul>
+                        {detailElements}
+                    </ul>
                 </div>
             )
         })
+        const formElements = education.map((course, index) => {
+            const detailElements = course.details.value.map(detail => {
+                return <textarea key={detail.id} value={detail.detail} onChange={(e) => this.editDetailsSection(e, course.id, detail.id)}/>
+            })
+            const courseElements = Object.keys(course).map(key => {
+                if(key === "id") return null
+                return (
+                    <div key={`${course[key].id}`} className="formField">
+                        <label htmlFor={key}>{this.props.convertToReadableName(key)}</label>
+                        {key === "details" && detailElements}
+                        {key !== "details" && <input value={course[key].value} name={key} id={key} onChange={(e) => this.editSection(e, course.id)} />}
+                    </div>
+                )
+            })
+            return (
+                <div key={`${course.id}`}>
+                    <h4>{`Course ${index + 1}`}</h4>
+                    {courseElements}
+                </div>
+            )
+        })
+
         return (
-            <div className="education">
-                <h2>EDUCATION</h2>
-                {educationElements}
-                {!editMode && <button className="edit-section-button" onClick={this.toggleEditMode}><img alt="edit button" src={pencilLogo}/></button>}
-                {editMode && <ModalComplex data={education} editSection={this.editSection} toggleEditMode={this.toggleEditMode} addSection={this.addSection} />}
-          
-            </div>
+            <>
+            <Section title="education" classToAdd="education" sectionElements={sectionElements} toggleEditMode={this.toggleEditMode}/>
+            {editMode && <Modal classToAdd="education--form" formElements={formElements} toggleEditMode={this.toggleEditMode} addSection={this.addSection} />}
+            </>
         )
     }
 }

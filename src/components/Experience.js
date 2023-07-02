@@ -1,8 +1,8 @@
 import React from "react";
+import Section from "./Section";
+import Modal from "./Modal"
 import "../styles/Experience.css"
 import { nanoid } from "nanoid";
-import ModalComplex from "./ModalComplex";
-import pencilLogo from "../assets/pencil.png"
 
 class Experience extends React.Component {
     constructor() {
@@ -10,19 +10,19 @@ class Experience extends React.Component {
         this.state = {
             experiences : [
                 {
-                    title : "WORKSHOP EMPLOYEE",
-                    company : "Traf's",
-                    location : "Quebec",
-                    time : "June 2020 - 2023",
-                    contribution : "perseverance, patience",
+                    title : {value : "Employment title", id : nanoid()},
+                    company : {value : "Company", id : nanoid()},
+                    location : {value : "Location", id : nanoid()},
+                    time : {value : "June 2020 - 2023", id : nanoid()},
+                    details : {value : [{id : nanoid(), detail : "Details about that experience such as key responsabilies."}, {id : nanoid(), detail : "Another detail about that experience."}], id : nanoid()},
                     id : nanoid()
                 },
                 {
-                    title : "LOREM IPSUM",
-                    company : "ti - expert",
-                    location : "Quebec",
-                    time : "2020",
-                    contribution : "perseverance, patience",
+                    title : {value : "Employment title", id : nanoid()},
+                    company : {value : "Company", id : nanoid()},
+                    location : {value : "Location", id : nanoid()},
+                    time : {value : "2020", id : nanoid()},
+                    details : {value : [{id : nanoid(), detail : "Details about that experience such as key responsabilies."}], id : nanoid()},
                     id : nanoid()
                 }
             ],
@@ -30,18 +30,33 @@ class Experience extends React.Component {
         }
     }
 
+    editDetailsSection(e, experienceId, detailId) {
+        this.setState(prevState => {
+            return ({
+                ...prevState,
+                experiences : prevState.experiences.map(experience => {
+                    return experience.id === experienceId
+                        ? {...experience, details : {...experience.details, value : experience.details.value.map(detail => {
+                            return detail.id === detailId
+                                ? {...detail, detail : e.target.value}
+                                : detail
+                        })} }
+                        : experience
+                })
+            })
+        })
+    }
+
     editSection = (e, experienceId) => {
         this.setState(prevState => {
-            return (
-                {
+            return ({
                     ...prevState,
                     experiences : prevState.experiences.map(experience => {
                         return experience.id === experienceId
-                            ? {...experience, [e.target.name] : e.target.value}
+                            ? {...experience, [e.target.name] : {...experience[e.target.name], value : e.target.value}}
                             : experience
                     })
-                }
-            )
+                })
         })
     }
 
@@ -53,11 +68,11 @@ class Experience extends React.Component {
                     experiences : [
                         ...prevState.experiences,
                         {
-                            diploma : "",
-                            school : "",
-                            location : "",
-                            time : "",
-                            contribution : "",
+                            title : {value : "", id : nanoid()},
+                            company : {value : "", id : nanoid()},
+                            location : {value : "", id : nanoid()},
+                            time : {value : "", id : nanoid()},
+                            details : {value : [{id : nanoid(), detail : ""}], id : nanoid()},
                             id : nanoid()
                         }
                     ]
@@ -76,22 +91,47 @@ class Experience extends React.Component {
 
     render() {
         const {experiences, editMode} = this.state
-        const experienceElements = this.state.experiences.map(experience => {
+        const sectionElements = this.state.experiences.map(experience => {
+            const detailElements = experience.details.value.map(detail => {
+                return <li key={`${detail.id}`}>{detail.detail}</li>
+            })
             return (
                 <div key={experience.id} className="experience">
-                    <h3>{experience.title}</h3>
-                    <p>{experience.company} |  {experience.location}  |  {experience.time}</p>
-                    <p>{`--> what this program brought me : ${experience.contribution}`}</p>
+                    <h3>{experience.title.value.toUpperCase()}</h3>
+                    <p>{experience.company.value} |  {experience.location.value}  |  {experience.time.value}</p>
+                    <ul>
+                        {detailElements}
+                    </ul>
                 </div>
             )
         })
-        return (
-            <div className="experiences">
-                <h2>EXPERIENCE</h2>
-                {experienceElements}
-                {!editMode && <button className="edit-section-button" onClick={this.toggleEditMode}><img alt="edit button" src={pencilLogo}/></button>}
-                {editMode && <ModalComplex data={experiences} editSection={this.editSection} toggleEditMode={this.toggleEditMode} addSection={this.addSection} />}
+        const formElements = experiences.map((experience, index) => {
+            const detailElements = experience.details.value.map(detail => {
+                return <textarea key={detail.id} value={detail.detail} onChange={(e) => this.editDetailsSection(e, experience.id, detail.id)}/>
+            })
+            const experienceElements = Object.keys(experience).map((key, index) => {
+                if(key === "id") return null
+                return (
+                    <div key={experience[key].id} className="formField">
+                        <label htmlFor={key}>{this.props.convertToReadableName(key)}</label>
+                        {key === "details" && detailElements}
+                        {key !== "details" && <input value={experience[key].value} name={key} onChange={(e) => this.editSection(e, experience.id)} />}
+                    </div>
+                )
+            })
+            return (
+                <div key={experience.id}>
+                    <h4>{`Experience ${index + 1}`}</h4>
+                    {experienceElements}
                 </div>
+            )
+        })
+
+        return (
+            <>
+            <Section title="experiences" classToAdd="experiences" sectionElements={sectionElements} toggleEditMode={this.toggleEditMode}/>
+            {editMode && <Modal classToAdd="experience--form" formElements={formElements} toggleEditMode={this.toggleEditMode} addSection={this.addSection}/>}
+            </>
         )
     }
 }
