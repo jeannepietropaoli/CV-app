@@ -38,3 +38,4 @@ The goal of this project is create a CV-builder application using React.
 - Adding / Deleting elements in skills section
 - Adding a customizable bonus section
 - Adding a option to export it to PDF / print it
+- Adding localStorage to save CV's data and display it on page reload
